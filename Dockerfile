@@ -79,5 +79,6 @@ RUN ./autogen.sh && \
     rm -rf /SDL
 WORKDIR /
 
-COPY weston.service /usr/lib/systemd/system/.
+#COPY weston.service /usr/lib/systemd/system/.
+COPY weston.service /tmp
 
