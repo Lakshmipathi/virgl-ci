@@ -25,8 +25,6 @@ RUN chmod +x /usr/sbin/policy-rc.d
 
 RUN echo deb-src http://deb.debian.org/debian unstable main >> /etc/apt/sources.list
 
-RUN /usr/sbin/update-ccache-symlinks
-
 RUN apt-get update && \
     apt-get -y install ca-certificates && \
     apt-get -y install --no-install-recommends \
