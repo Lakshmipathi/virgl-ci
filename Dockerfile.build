@@ -96,6 +96,7 @@ RUN git clone git://anongit.freedesktop.org/mesa/mesa . && \
     git checkout ${KNOWN_GOOD_MESA} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local --with-platforms="drm x11 wayland" --with-dri-drivers="i965" --with-gallium-drivers="swrast virgl radeonsi" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0 && \
+    make -j$(nproc) && find . -type f | xargs strip -s \
     make -j$(nproc) install 
 WORKDIR /
 
@@ -108,7 +109,7 @@ RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git . && \
     mkdir build && \
     cd build && \
     cmake .. -DDEQP_TARGET=wayland && \
-    make -j$(nproc) 
+    make -j$(nproc) && find . -type f | xargs strip -s
 WORKDIR /
 
 ARG KNOWN_GOOD_PIGLIT=1a2f49f17fb45
@@ -117,7 +118,7 @@ RUN git clone git://anongit.freedesktop.org/git/piglit . && \
     git checkout ${KNOWN_GOOD_PIGLIT} && \
     git log --oneline -n 1 && \
     cmake . && \
-    make -j$(nproc)
+    make -j$(nproc) && find . -type f | xargs strip -s
 WORKDIR /
 
 ARG CI_COMMIT_SHA=HEAD
