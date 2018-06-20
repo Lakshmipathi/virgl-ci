@@ -6,6 +6,8 @@ ENV PATH=$PATH:/usr/local/go/bin
 ENV LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/share/pkgconfig
 ENV LDFLAGS="-L/usr/local/lib64"
+ENV CFLAGS="-g0"
+ENV CXXFLAGS="-g0"
 
 RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/99-exclude-cruft
 RUN echo 'path-exclude=/usr/share/man/*' >> /etc/dpkg/dpkg.cfg.d/99-exclude-cruft
@@ -66,7 +68,7 @@ RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git . && \
     git log --oneline -n 1 && \
     mkdir build && \
     cd build && \
-    cmake .. -DDEQP_TARGET=x11_egl && \
+    cmake .. -DDEQP_TARGET=x11_egl -DCMAKE_C_FLAGS="-g0" -DCMAKE_CXX_FLAGS="-g0" && \
     make -j$(nproc)  && find . -type f | xargs  strip  || true && \
     mv /VK-GL-CTS/build /usr/local/VK-GL-CTS && \
     rm -rf /VK-GL-CTS
@@ -74,13 +76,13 @@ WORKDIR /
 
 ARG KNOWN_GOOD_PIGLIT=1a2f49f17fb45
 WORKDIR /piglit
-RUN git clone https://gitlab.freedesktop.org/mesa/piglit.git . && \
+RUN git clone git://anongit.freedesktop.org/git/piglit . && \
     git checkout ${KNOWN_GOOD_PIGLIT} && \
     git log --oneline -n 1 && \
     mkdir /usr/local/piglit  && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local/piglit . && \
-    make -j$(nproc) install && rm -rf /piglit \
-    find /usr/loca/piglit -type f | xargs  strip  || true 
+    cmake -DCMAKE_C_FLAGS="-g0" -DCMAKE_CXX_FLAGS="-g0" -DCMAKE_INSTALL_PREFIX=/usr/local/piglit . && \
+    make -j$(nproc) install && rm -rf /piglit && \
+    find /usr/local/piglit -type f | xargs  strip  || true 
 WORKDIR /
 
 ARG KNOWN_GOOD_MESA=8efdffba9408
